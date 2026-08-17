@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>File Upload Demo</title>
+</head>
+
+<body>
+
+<h2>Upload Resume</h2>
+
+<label for="resume">Choose Resume</label>
+<input
+    type="file"
+    id="resume"
+    onchange="uploadFile()">
+
+<p id="status"></p>
+
+<script>
+function uploadFile() {
+
+    const fileInput = document.getElementById("resume");
+
+    const status = document.getElementById("status");
+
+    if (fileInput.files.length > 0) {
+
+        status.innerText =
+            "Uploaded: " + fileInput.files[0].name;
+
+    }
+    else {
+
+        status.innerText =
+            "No file selected";
+
+    }
+
+}
+</script>
+
+</body>
+
+</html>

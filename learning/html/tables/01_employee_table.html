@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Employee Table</title>
+</head>
+
+<body>
+
+<h2>Employee Management</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Employee</th>
+            <th>Department</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+
+        <tr>
+            <td>Neeraj</td>
+            <td>QA</td>
+            <td>Active</td>
+            <td>
+                <button>Edit</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Rahul</td>
+            <td>Development</td>
+            <td>Active</td>
+            <td>
+                <button>Edit</button>
+            </td>
+        </tr>
+
+        <tr>
+            <td>Amit</td>
+            <td>QA</td>
+            <td>Inactive</td>
+            <td>
+                <button>Edit</button>
+            </td>
+        </tr>
+
+    </tbody>
+</table>
+
+<p id="result"></p>
+
+<script>
+    document.querySelectorAll("button").forEach(button => {
+        button.addEventListener("click", function() {
+            this.closest("tr").querySelector("td").textContent;
+            document.getElementById("result").innerText =
+                "Edit clicked";
+        });
+    });
+</script>
+
+</body>
+</html>

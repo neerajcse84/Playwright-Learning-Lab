@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Shadow DOM Demo</title>
+</head>
+
+<body>
+
+<h1>Main Page</h1>
+
+<my-login></my-login>
+
+<script>
+class MyLogin extends HTMLElement {
+
+    constructor() {
+        super();
+
+        const shadow = this.attachShadow({ mode: "open" });
+
+        shadow.innerHTML = `
+            <style>
+                .login-box {
+                    border: 2px solid black;
+                    padding: 20px;
+                    width: 300px;
+                }
+
+                input {
+                    display: block;
+                    margin: 10px 0;
+                    padding: 8px;
+                }
+            </style>
+
+            <div class="login-box">
+                <h2>Login</h2>
+
+                <input
+                    id="username"
+                    placeholder="Username">
+
+                <input
+                    id="password"
+                    type="password"
+                    placeholder="Password">
+
+                <button id="login">
+                    Login
+                </button>
+
+                <p id="message"></p>
+            </div>
+        `;
+
+        const loginButton = shadow.querySelector("#login");
+        const message = shadow.querySelector("#message");
+
+        loginButton.addEventListener("click", () => {
+            message.textContent = "Login successful";
+        });
+    }
+}
+
+customElements.define("my-login", MyLogin);
+</script>
+
+</body>
+</html>

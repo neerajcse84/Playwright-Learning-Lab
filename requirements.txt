@@ -1,0 +1,5 @@
+pytest==9.1.1
+playwright==1.62.0
+pytest-html==4.2.0
+pytest-metadata==3.1.1
+Flask==3.1.3

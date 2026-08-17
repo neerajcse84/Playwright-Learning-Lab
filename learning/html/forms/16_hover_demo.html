@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Hover Demo</title>
+
+    <style>
+        #menu {
+            display: none;
+            margin-top: 10px;
+        }
+
+        #products:hover + #menu {
+            display: block;
+        }
+
+        #menu div {
+            padding: 8px;
+            width: 120px;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Hover Demo</h2>
+
+<button id="products">
+    Products
+</button>
+
+<div id="menu">
+    <div>Laptops</div>
+    <div>Mobiles</div>
+    <div>Tablets</div>
+</div>
+
+</body>
+
+</html>

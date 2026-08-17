@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Custom Dropdown Demo</title>
+
+    <style>
+        .dropdown {
+            width: 220px;
+            cursor: pointer;
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .options {
+            display: none;
+            width: 220px;
+            border: 1px solid black;
+            padding: 0;
+            margin: 0;
+        }
+
+        .options li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .options li:hover {
+            background: lightgray;
+        }
+    </style>
+</head>
+
+<body>
+
+<h2>Custom Dropdown</h2>
+
+<div id="dropdown" class="dropdown">
+    Select Country
+</div>
+
+<ul id="options" class="options">
+    <li>India</li>
+    <li>USA</li>
+    <li>United Kingdom</li>
+</ul>
+
+<script>
+const dropdown = document.getElementById("dropdown");
+const options = document.getElementById("options");
+
+dropdown.onclick = function () {
+    options.style.display = "block";
+}
+
+document.querySelectorAll("#options li").forEach(item => {
+    item.onclick = function () {
+        dropdown.innerText = this.innerText;
+        options.style.display = "none";
+    }
+});
+</script>
+
+</body>
+
+</html>

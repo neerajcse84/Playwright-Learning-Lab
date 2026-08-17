@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Prompt Dialog Demo</title>
+</head>
+
+<body>
+
+<h2>Prompt Dialog Demo</h2>
+
+<button onclick="askName()">
+    Enter Name
+</button>
+
+<p id="result"></p>
+
+<script>
+
+function askName() {
+
+    let name = prompt("What is your name?");
+
+    if (name !== null) {
+        document.getElementById("result").innerText =
+            "Hello " + name;
+    }
+    else {
+        document.getElementById("result").innerText =
+            "User Cancelled";
+    }
+
+}
+
+</script>
+
+</body>
+
+</html>

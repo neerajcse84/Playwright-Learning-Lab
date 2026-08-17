@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Disabled Button Demo</title>
+</head>
+
+<script>
+
+    console.log("Page Loaded...");
+
+    setTimeout(() => {
+
+        console.log("Button Enabled...");
+
+        document.querySelector("#loginBtn").disabled = false;
+
+    }, 3000);
+
+</script>
+<body>
+
+    <h1>Actionability Demo</h1>
+
+    <label for="username">Username</label>
+    <input id="username" placeholder="Enter Username">
+
+    <br><br>
+
+    <button id="loginBtn" disabled>
+        Login
+    </button>
+
+</body>
+
+</html>
