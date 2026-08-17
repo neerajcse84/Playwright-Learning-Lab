@@ -14,7 +14,7 @@ pipeline {
             steps {
                 bat 'if exist reports rmdir /s /q reports'
                 bat 'mkdir reports'
-                bat 'python -m venv .venv'
+                bat '"C:\\Users\\neera\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m venv .venv'
                 bat '.venv\\Scripts\\python -m pip install -r requirements.txt'
                 bat '.venv\\Scripts\\python -m playwright install'
             }
