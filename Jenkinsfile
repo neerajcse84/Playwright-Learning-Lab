@@ -19,13 +19,13 @@ pipeline {
 
         stage('Start Application') {
             steps {
-                bat 'start /B .venv\\Scripts\\python app\\web\\app.py'
+                bat 'set APP_PORT=5000 && start /B .venv\\Scripts\\python app\\web\\app.py'
             }
         }
 
         stage('Wait for Application') {
             steps {
-                bat '.venv\\Scripts\\python scripts\\wait_for_app.py'
+                bat 'set APP_URL=http://127.0.0.1:5000 && .venv\\Scripts\\python scripts\\wait_for_app.py'
             }
         }
 
@@ -63,12 +63,22 @@ pipeline {
 }
     stage('Start Deployed Application') {
     steps {
-        bat 'start /B C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python C:\\Deploy\\Playwright-Learning-Lab\\app\\web\\app.py'
+        bat 'set APP_PORT=5001 && start /B C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python C:\\Deploy\\Playwright-Learning-Lab\\app\\web\\app.py'
+        
     }
 }
     stage('Wait for Deployed Application') {
     steps {
-        bat 'C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python scripts\\wait_for_app.py'
+        bat 'set APP_URL=http://127.0.0.1:5001 && C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python scripts\\wait_for_app.py'
+    }
+}
+   stage('Smoke Test') {
+    steps {
+        bat '''
+            set BASE_URL=http://127.0.0.1:5001 && ^
+            C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python -m pytest ^
+            framework\\tests\\test_smoke.py -v
+        '''
     }
 }
     }
