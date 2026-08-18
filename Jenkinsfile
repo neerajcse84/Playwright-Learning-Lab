@@ -46,6 +46,31 @@ pipeline {
         bat 'tar -a -c -f artifacts\\flask-app.zip app requirements.txt'
     }
 }
+    stage('Deploy') {
+    steps {
+        bat 'if not exist C:\\Deploy\\Playwright-Learning-Lab mkdir C:\\Deploy\\Playwright-Learning-Lab'
+        bat 'copy /Y artifacts\\flask-app.zip C:\\Deploy\\Playwright-Learning-Lab\\'
+        bat 'tar -xf C:\\Deploy\\Playwright-Learning-Lab\\flask-app.zip -C C:\\Deploy\\Playwright-Learning-Lab'
+    }
+}
+
+    stage('Prepare Deployment Runtime') {
+    steps {
+        bat '"C:\\Users\\neera\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe" -m venv C:\\Deploy\\Playwright-Learning-Lab\\.venv'
+
+        bat 'C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python -m pip install -r C:\\Deploy\\Playwright-Learning-Lab\\requirements.txt'
+    }
+}
+    stage('Start Deployed Application') {
+    steps {
+        bat 'start /B C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python C:\\Deploy\\Playwright-Learning-Lab\\app\\web\\app.py'
+    }
+}
+    stage('Wait for Deployed Application') {
+    steps {
+        bat 'C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python scripts\\wait_for_app.py'
+    }
+}
     }
 
     post {

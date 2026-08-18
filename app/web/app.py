@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, session, redirect, url_for
+import os
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
 
@@ -35,4 +36,5 @@ def logout():
                     
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.getenv("APP_PORT", "5000"))
+    app.run(debug=True, port=port)
