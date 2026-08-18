@@ -4,12 +4,7 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
+        
         stage('Setup') {
             steps {
                 bat 'if exist reports rmdir /s /q reports'
