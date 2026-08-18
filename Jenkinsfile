@@ -39,6 +39,13 @@ pipeline {
                 '''
             }
         }
+
+       stage('Package') {
+    steps {
+        bat 'if not exist artifacts mkdir artifacts'
+        bat 'tar -a -c -f artifacts\\flask-app.zip app requirements.txt'
+    }
+}
     }
 
     post {
@@ -53,6 +60,8 @@ pipeline {
                 alwaysLinkToLastBuild: true,
                 allowMissing: false
             ])
+            archiveArtifacts artifacts: 'artifacts/flask-app.zip', fingerprint: true
         }
+        
     }
 }
