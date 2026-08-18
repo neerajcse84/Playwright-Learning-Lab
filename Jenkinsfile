@@ -7,9 +7,7 @@ pipeline {
         
         stage('Setup') {
     steps {
-        bat 'where python'
-        bat 'python --version'
-
+       
         bat 'if exist reports rmdir /s /q reports'
         bat 'mkdir reports'
 
