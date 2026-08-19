@@ -13,6 +13,7 @@ import pytest_html
 from pathlib import Path
 import base64
 from pytest_metadata.plugin import metadata_key
+import os
 
 
 
@@ -21,7 +22,8 @@ from pytest_metadata.plugin import metadata_key
 def browser() -> Browser:
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        headless = os.getenv("HEADLESS", "true").lower() == "true"
+        browser = p.chromium.launch(headless=headless)
 
         yield browser
 
