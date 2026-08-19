@@ -32,7 +32,7 @@ pipeline {
         stage('Test') {
             steps {
                 bat '''
-                    .venv\\Scripts\\python -m pytest framework/tests ^
+                    .venv\\Scripts\\python -m pytest framework/tests -m "not deployment_smoke" ^
                     --junitxml=reports\\test-results.xml ^
                     --html=reports\\report.html ^
                     --self-contained-html
@@ -75,9 +75,9 @@ pipeline {
    stage('Smoke Test') {
     steps {
         bat '''
-            set BASE_URL=http://127.0.0.1:5001 && ^
+            set APP_URL=http://127.0.0.1:5001 && ^
             C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python -m pytest ^
-            framework\\tests\\test_smoke.py -v
+            framework\\tests\\test_smoke.py -m deployment_smoke -v
         '''
     }
 }

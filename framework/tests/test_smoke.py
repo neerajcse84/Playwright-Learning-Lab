@@ -1,8 +1,16 @@
+import os
+import pytest
 from playwright.sync_api import Page
 
 
+@pytest.mark.deployment_smoke
 def test_application_smoke(page: Page):
-    page.goto("http://127.0.0.1:5001")
+    app_url = os.getenv(
+        "APP_URL",
+        "http://127.0.0.1:5000"
+    )
+
+    page.goto(app_url)
 
     assert page.get_by_role(
         "heading",
