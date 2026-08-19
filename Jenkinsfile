@@ -72,14 +72,11 @@ pipeline {
         bat 'set APP_URL=http://127.0.0.1:5001 && C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python scripts\\wait_for_app.py'
     }
 }
-   stage('Smoke Test') {
+    stage('Smoke Test') {
     steps {
-        bat '''
-            set APP_URL=http://127.0.0.1:5001 && ^
-            C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python -m pytest ^
-            framework\\tests\\test_smoke.py -m deployment_smoke -v
-        '''
+        bat 'set APP_URL=http://127.0.0.1:5001 && C:\\Deploy\\Playwright-Learning-Lab\\.venv\\Scripts\\python -m pytest framework\\tests\\test_smoke.py -m deployment_smoke -v'
     }
+}
 }
     }
 
