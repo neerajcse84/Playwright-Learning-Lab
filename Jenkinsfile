@@ -3,22 +3,21 @@ pipeline {
     agent any
 
     environment {
-        APP_IMAGE       = "playwright-lab:${BUILD_NUMBER}"
-        TEST_IMAGE      = "playwright-test:${BUILD_NUMBER}"
-        APP_CONTAINER   = "playwright-flask-${BUILD_NUMBER}"
-        NETWORK_NAME    = "qa-network-${BUILD_NUMBER}"
-        APP_URL         = "http://playwright-flask-${BUILD_NUMBER}:5000"
-        HOST_PORT       = "5000"
+        APP_IMAGE     = "playwright-lab:${BUILD_NUMBER}"
+        TEST_IMAGE    = "playwright-test:${BUILD_NUMBER}"
+        APP_CONTAINER = "playwright-flask-${BUILD_NUMBER}"
+        NETWORK_NAME  = "qa-network-${BUILD_NUMBER}"
+        APP_URL       = "http://playwright-flask-${BUILD_NUMBER}:5000"
     }
 
     stages {
 
         stage('Check Docker') {
-    steps {
-        bat 'docker --version'
-        bat 'docker info'
-    }
-}
+            steps {
+                bat 'docker --version'
+                bat 'docker info'
+            }
+        }
 
         stage('Build App Image') {
             steps {
@@ -45,7 +44,6 @@ pipeline {
                     --name %APP_CONTAINER% ^
                     --network %NETWORK_NAME% ^
                     -e APP_PORT=5000 ^
-                    -p %HOST_PORT%:5000 ^
                     %APP_IMAGE%
                 '''
             }
@@ -54,9 +52,10 @@ pipeline {
         stage('Wait for Application') {
             steps {
                 bat '''
-                    set APP_URL=http://127.0.0.1:%HOST_PORT% && ^
-                    C:\\Users\\neera\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe ^
-                    scripts\\wait_for_app.py
+                    docker run --rm ^
+                    --network %NETWORK_NAME% ^
+                    %TEST_IMAGE% ^
+                    python -c "import urllib.request; print(urllib.request.urlopen('%APP_URL%').status)"
                 '''
             }
         }
@@ -91,7 +90,6 @@ pipeline {
     post {
 
         always {
-
             junit 'reports/test-results.xml'
 
             publishHTML(target: [
