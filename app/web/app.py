@@ -1,7 +1,9 @@
 from flask import Flask, render_template, request, session, redirect, url_for
 import os
+from database.db import  get_employees, get_employee_by_id
 app = Flask(__name__)
 app.secret_key = "dev-secret-key"
+
 
 
 @app.route("/")
@@ -33,7 +35,23 @@ def logout():
     session.clear()
     return redirect(url_for("home"))
 
-                    
+@app.route("/employees")
+def employees():
+    employees = get_employees()
+
+    return {
+        "employees": employees
+    }                    
+
+@app.route("/employees/<int:employee_id>")
+def employee(employee_id):
+    employee = get_employee_by_id(employee_id)
+
+    if employee is None:
+        return {"error": "Employee not found"}, 404
+
+    return employee
+
 
 if __name__ == "__main__":
     port = int(os.getenv("APP_PORT", "5000"))
