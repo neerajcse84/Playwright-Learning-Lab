@@ -14,6 +14,7 @@ from pathlib import Path
 import base64
 from pytest_metadata.plugin import metadata_key
 import os
+from database.db import delete_employee
 
 
 
@@ -110,3 +111,20 @@ def pytest_runtest_makereport(item, call):
 
 def pytest_configure(config):
     config.stash[metadata_key]["Base URL"] = BASE_URL
+
+
+                                    #----API Fixtrures--------------------
+
+
+
+@pytest.fixture
+def created_employee():
+    employee = {}
+
+    yield employee
+
+    if "employee_id" in employee:
+        employee_id = employee["employee_id"]
+        deleted_id = delete_employee(employee_id)
+
+        assert deleted_id == employee_id

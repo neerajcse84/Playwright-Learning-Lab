@@ -1,0 +1,983 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Employee Management</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+
+        h1 {
+            margin-bottom: 25px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        label {
+            margin-right: 5px;
+        }
+
+        input,
+        select {
+            padding: 6px;
+            margin-right: 10px;
+        }
+
+        button {
+            padding: 7px 14px;
+            margin-right: 5px;
+            cursor: pointer;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #999;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        #updateSection {
+            display: none;
+            border: 1px solid #999;
+            padding: 20px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Employee Management</h1>
+
+
+    <!-- ================================================= -->
+    <!-- SEARCH -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Search Employee</h2>
+
+        <label for="employeeId">
+            Employee ID:
+        </label>
+
+        <input
+            type="number"
+            id="employeeId"
+            min="1"
+            step="1"
+        >
+
+        <button
+            type="button"
+            id="searchButton">
+            Search
+        </button>
+
+        <button
+            type="button"
+            id="showAllButton">
+            Show All
+        </button>
+
+        <p
+            id="searchMessage"
+            class="message">
+        </p>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- CREATE -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Create Employee</h2>
+
+        <form id="createEmployeeForm">
+
+            <div>
+
+                <label for="name">
+                    Name:
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <div>
+
+                <label for="email">
+                    Email:
+                </label>
+
+                <input
+                    type="email"
+                    id="email"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <div>
+
+                <label for="contactNumber">
+                    Contact Number:
+                </label>
+
+                <input
+                    type="text"
+                    id="contactNumber"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <button type="submit">
+                Create Employee
+            </button>
+
+        </form>
+
+        <p
+            id="createMessage"
+            class="message">
+        </p>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- UPDATE -->
+    <!-- ================================================= -->
+
+    <div
+        id="updateSection"
+        class="section">
+
+        <h2>Update Employee</h2>
+
+        <form id="updateEmployeeForm">
+
+            <input
+                type="hidden"
+                id="updateEmployeeId"
+            >
+
+            <div>
+
+                <label for="updateName">
+                    Name:
+                </label>
+
+                <input
+                    type="text"
+                    id="updateName"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <div>
+
+                <label for="updateEmail">
+                    Email:
+                </label>
+
+                <input
+                    type="email"
+                    id="updateEmail"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <div>
+
+                <label for="updateContactNumber">
+                    Contact Number:
+                </label>
+
+                <input
+                    type="text"
+                    id="updateContactNumber"
+                    required
+                >
+
+            </div>
+
+            <br>
+
+            <button type="submit">
+                Save Changes
+            </button>
+
+            <button
+                type="button"
+                id="cancelUpdateButton">
+                Cancel
+            </button>
+
+        </form>
+
+        <p
+            id="updateMessage"
+            class="message">
+        </p>
+
+    </div>
+
+
+    <!-- ================================================= -->
+    <!-- EMPLOYEE TABLE -->
+    <!-- ================================================= -->
+
+    <div class="section">
+
+        <h2>Employees</h2>
+
+        <table>
+
+            <thead>
+
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Contact Number</th>
+                    <th>Action</th>
+                </tr>
+
+            </thead>
+
+            <tbody id="employeeTableBody">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <script>
+
+        // =================================================
+        // DOM ELEMENTS
+        // =================================================
+
+        const tableBody =
+            document.getElementById(
+                "employeeTableBody"
+            );
+
+        const searchMessage =
+            document.getElementById(
+                "searchMessage"
+            );
+
+        const createMessage =
+            document.getElementById(
+                "createMessage"
+            );
+
+        const updateSection =
+            document.getElementById(
+                "updateSection"
+            );
+
+        const updateMessage =
+            document.getElementById(
+                "updateMessage"
+            );
+
+
+        // =================================================
+        // STORE ORIGINAL EMPLOYEE DATA
+        // =================================================
+
+        let originalEmployee = null;
+
+
+        // =================================================
+        // DISPLAY EMPLOYEES
+        // =================================================
+
+        function displayEmployees(employees) {
+
+            tableBody.innerHTML = "";
+
+            employees.forEach(employee => {
+
+                const row = `
+                    <tr>
+
+                        <td>
+                            ${employee.employee_id}
+                        </td>
+
+                        <td>
+                            ${employee.name}
+                        </td>
+
+                        <td>
+                            ${employee.email}
+                        </td>
+
+                        <td>
+                            ${employee.contact_number}
+                        </td>
+
+                        <td>
+
+                            <select
+                                onchange="handleAction(
+                                    this.value,
+                                    ${employee.employee_id}
+                                )">
+
+                                <option value="">
+                                    Select Action
+                                </option>
+
+                                <option value="update">
+                                    Update
+                                </option>
+
+                                <option value="delete">
+                                    Delete
+                                </option>
+
+                            </select>
+
+                        </td>
+
+                    </tr>
+                `;
+
+                tableBody.innerHTML += row;
+            });
+        }
+
+
+        // =================================================
+        // LOAD ALL EMPLOYEES
+        // =================================================
+
+        async function loadEmployees() {
+
+            searchMessage.textContent = "";
+
+            try {
+
+                const response =
+                    await fetch("/employees");
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    tableBody.innerHTML = "";
+
+                    searchMessage.textContent =
+                        data.error ||
+                        "Unable to load employees";
+
+                    return;
+                }
+
+
+                displayEmployees(
+                    data.employees
+                );
+
+            } catch (error) {
+
+                tableBody.innerHTML = "";
+
+                searchMessage.textContent =
+                    "Unable to connect to server";
+            }
+        }
+
+
+        // =================================================
+        // SEARCH EMPLOYEE
+        // =================================================
+
+        async function searchEmployee() {
+
+            const employeeId =
+                document
+                    .getElementById("employeeId")
+                    .value;
+
+
+            if (!employeeId) {
+
+                tableBody.innerHTML = "";
+
+                searchMessage.textContent =
+                    "Please enter Employee ID";
+
+                return;
+            }
+
+
+            if (Number(employeeId) <= 0) {
+
+                tableBody.innerHTML = "";
+
+                searchMessage.textContent =
+                    "Employee ID must be a positive number";
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/employees/${employeeId}`
+                    );
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    tableBody.innerHTML = "";
+
+                    searchMessage.textContent =
+                        data.error ||
+                        "Employee not found";
+
+                    return;
+                }
+
+
+                searchMessage.textContent = "";
+
+                displayEmployees([data]);
+
+            } catch (error) {
+
+                tableBody.innerHTML = "";
+
+                searchMessage.textContent =
+                    "Unable to connect to server";
+            }
+        }
+
+
+        // =================================================
+        // CREATE EMPLOYEE
+        // =================================================
+
+        async function createEmployee(event) {
+
+            event.preventDefault();
+
+            createMessage.textContent = "";
+
+
+            const employee = {
+
+                name:
+                    document
+                        .getElementById("name")
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById("email")
+                        .value
+                        .trim(),
+
+                contact_number:
+                    document
+                        .getElementById("contactNumber")
+                        .value
+                        .trim()
+            };
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        "/employees",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(employee)
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    createMessage.textContent =
+                        data.error ||
+                        "Unable to create employee";
+
+                    return;
+                }
+
+
+                createMessage.textContent =
+                    "Employee created successfully";
+
+
+                document
+                    .getElementById(
+                        "createEmployeeForm"
+                    )
+                    .reset();
+
+
+                await loadEmployees();
+
+            } catch (error) {
+
+                createMessage.textContent =
+                    "Unable to connect to server";
+            }
+        }
+
+
+        // =================================================
+        // HANDLE ACTION
+        // =================================================
+
+        function handleAction(
+            action,
+            employeeId
+        ) {
+
+            if (action === "update") {
+
+                openUpdateForm(employeeId);
+            }
+
+            if (action === "delete") {
+
+                deleteEmployee(employeeId);
+            }
+        }
+
+
+        // =================================================
+        // OPEN UPDATE FORM
+        // =================================================
+
+        async function openUpdateForm(employeeId) {
+
+            updateMessage.textContent = "";
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/employees/${employeeId}`
+                    );
+
+                const employee =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    updateMessage.textContent =
+                        employee.error ||
+                        "Employee not found";
+
+                    return;
+                }
+
+
+                // Store original values
+                originalEmployee = {
+                    name: employee.name,
+                    email: employee.email,
+                    contact_number:
+                        employee.contact_number
+                };
+
+
+                document
+                    .getElementById(
+                        "updateEmployeeId"
+                    )
+                    .value =
+                    employee.employee_id;
+
+
+                document
+                    .getElementById(
+                        "updateName"
+                    )
+                    .value =
+                    employee.name;
+
+
+                document
+                    .getElementById(
+                        "updateEmail"
+                    )
+                    .value =
+                    employee.email;
+
+
+                document
+                    .getElementById(
+                        "updateContactNumber"
+                    )
+                    .value =
+                    employee.contact_number;
+
+
+                updateSection.style.display =
+                    "block";
+
+
+                updateSection.scrollIntoView({
+                    behavior: "smooth"
+                });
+
+            } catch (error) {
+
+                updateMessage.textContent =
+                    "Unable to connect to server";
+            }
+        }
+
+
+        // =================================================
+        // UPDATE EMPLOYEE USING PATCH
+        // =================================================
+
+        async function updateEmployee(event) {
+
+            event.preventDefault();
+
+            updateMessage.textContent = "";
+
+
+            const employeeId =
+                document
+                    .getElementById(
+                        "updateEmployeeId"
+                    )
+                    .value;
+
+
+            const currentEmployee = {
+
+                name:
+                    document
+                        .getElementById(
+                            "updateName"
+                        )
+                        .value
+                        .trim(),
+
+                email:
+                    document
+                        .getElementById(
+                            "updateEmail"
+                        )
+                        .value
+                        .trim(),
+
+                contact_number:
+                    document
+                        .getElementById(
+                            "updateContactNumber"
+                        )
+                        .value
+                        .trim()
+            };
+
+
+            // Build only changed fields
+            const changedFields = {};
+
+            if (
+                currentEmployee.name !==
+                originalEmployee.name
+            ) {
+                changedFields.name =
+                    currentEmployee.name;
+            }
+
+
+            if (
+                currentEmployee.email !==
+                originalEmployee.email
+            ) {
+                changedFields.email =
+                    currentEmployee.email;
+            }
+
+
+            if (
+                currentEmployee.contact_number !==
+                originalEmployee.contact_number
+            ) {
+                changedFields.contact_number =
+                    currentEmployee.contact_number;
+            }
+
+
+            // Nothing changed
+            if (
+                Object.keys(changedFields).length === 0
+            ) {
+
+                updateMessage.textContent =
+                    "No changes to update";
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/employees/${employeeId}`,
+                        {
+                            method: "PATCH",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body:
+                                JSON.stringify(
+                                    changedFields
+                                )
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    updateMessage.textContent =
+                        data.error ||
+                        "Unable to update employee";
+
+                    return;
+                }
+
+
+                updateMessage.textContent =
+                    "Employee updated successfully";
+
+
+                await loadEmployees();
+
+
+            } catch (error) {
+
+                updateMessage.textContent =
+                    "Unable to connect to server";
+            }
+        }
+
+
+        // =================================================
+        // CANCEL UPDATE
+        // =================================================
+
+        function cancelUpdate() {
+
+            updateSection.style.display =
+                "none";
+
+            updateMessage.textContent = "";
+
+            originalEmployee = null;
+
+            document
+                .getElementById(
+                    "updateEmployeeForm"
+                )
+                .reset();
+        }
+
+
+        // =================================================
+        // DELETE EMPLOYEE
+        // =================================================
+
+        async function deleteEmployee(employeeId) {
+
+            const confirmed =
+                confirm(
+                    `Are you sure you want to delete employee ${employeeId}?`
+                );
+
+
+            if (!confirmed) {
+
+                return;
+            }
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        `/employees/${employeeId}`,
+                        {
+                            method: "DELETE"
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    alert(
+                        data.error ||
+                        "Unable to delete employee"
+                    );
+
+                    return;
+                }
+
+
+                alert(data.message);
+
+
+                await loadEmployees();
+
+            } catch (error) {
+
+                alert(
+                    "Unable to connect to server"
+                );
+            }
+        }
+
+
+        // =================================================
+        // EVENT LISTENERS
+        // =================================================
+
+        document
+            .getElementById("searchButton")
+            .addEventListener(
+                "click",
+                searchEmployee
+            );
+
+
+        document
+            .getElementById("showAllButton")
+            .addEventListener(
+                "click",
+                loadEmployees
+            );
+
+
+        document
+            .getElementById("createEmployeeForm")
+            .addEventListener(
+                "submit",
+                createEmployee
+            );
+
+
+        document
+            .getElementById("updateEmployeeForm")
+            .addEventListener(
+                "submit",
+                updateEmployee
+            );
+
+
+        document
+            .getElementById("cancelUpdateButton")
+            .addEventListener(
+                "click",
+                cancelUpdate
+            );
+
+
+        // =================================================
+        // INITIAL LOAD
+        // =================================================
+
+        loadEmployees();
+
+    </script>
+
+</body>
+
+</html>
